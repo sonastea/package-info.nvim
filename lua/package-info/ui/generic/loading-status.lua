@@ -21,7 +21,6 @@ local M = {
         timer = nil,
     },
 }
-
 local config = require("package-info.config")
 
 -- nvim-notify support
@@ -43,11 +42,11 @@ M.new = function(message)
         notification = nil,
     }
 
-    if nvim_notify or snacks_notifier and config.options.notifications then
+    if (nvim_notify or snacks_notifier) and config.options.notifications then
         instance.notification = vim.notify(message, vim.log.levels.INFO, {
             title = title,
             icon = SPINNERS[1],
-            timeout = false,
+            timeout = config.options.timeout,
             hide_from_history = true,
         })
     end
@@ -88,7 +87,7 @@ M.stop = function(id, message, level)
     if level == nil then
         level = vim.log.levels.INFO
     end
-    if nvim_notify or snacks_notifier and M.state.notification then
+    if (nvim_notify or snacks_notifier) and M.state.notification then
         local level_icon = {
             [vim.log.levels.INFO] = "󰗠 ",
             [vim.log.levels.ERROR] = "󰅙 ",
@@ -99,7 +98,7 @@ M.stop = function(id, message, level)
             title = title,
             icon = level_icon[level],
             replace = M.state.notification,
-            timeout = 3000,
+            timeout = config.options.timeout,
         })
         M.state.notification = new_notif
         M.state.notification = nil
@@ -123,7 +122,7 @@ M.update_spinner = function(message)
 
     M.state.index = M.state.index % #SPINNERS + 1
 
-    if nvim_notify and M.state.notification then
+    if (nvim_notify or snacks_notifier) and M.state.notification then
         local new_notif = vim.notify(message, vim.log.levels.INFO, {
             title = title,
             hide_from_history = true,
