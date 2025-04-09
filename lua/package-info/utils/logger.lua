@@ -1,6 +1,6 @@
 local M = {}
 
-function get_timeout()
+local function get_timeout()
     local ok, cfg = pcall(require, "package-info.config")
     return (ok and cfg.options.timeout) or 3000
 end
